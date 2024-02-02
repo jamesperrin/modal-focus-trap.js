@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bootstrap 4 Example | Modal Focus Trap</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
+
+    <style>
+        /*-----------------------------------------------------------
+        JS required label validaiton styling
+        See: app.js AppServices.handleRequiredFormLabels()
+        Overriding reboot.scs
+        -----------------------------------------------------------*/
+        abbr[title="required"] {
+            margin-left: 5px;
+            font-size: 1.25em;
+            color: red;
+            text-decoration: none;
+            cursor: unset;
+            border-bottom: 0;
+        }
+
+        .modal-header .close {
+            background: #6c757d;
+            color: white;
+            font-size: 2rem;
+            padding: 0.10rem 0.5rem 0.5rem;
+            margin: -0.5rem -0.5rem -0.5rem auto;
+            border-radius: 0.25rem;
+        }
+
+        .modal-header .close:hover,
+        .modal-header .close:focus {
+            font-size: 2.15rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <h1>Modal Focus Trap - Bootstrap 4 Example</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col mt-4">
+                <p style="font-size: 1.2em;">Click button to view how Modal loses focus.</p>
+
+                <button type="button" title="Disable focus trap" id="DisableBtn" class="btn btn-danger">
+                    Disable focus trap
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col mt-4">
+                <button type="button" title="Add 1" class="btn btn-primary link--add modal--trigger">
+                    Add 1
+                </button>
+                <button type="button" title="Add 2" class="btn btn-primary link--add modal--trigger">
+                    Add 2
+                </button>
+                <button type="button" title="Add 3" class="btn btn-primary link--add modal--trigger">
+                    Add 3
+                </button>
+                <button type="button" title="Add 4" class="btn btn-primary link--add modal--trigger">
+                    Add 4
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <h2>Examples</h2>
+                <ul>
+                    <li>
+                        <a href="./index.html" title="Bootstrap 4 Example">
+                            Bootstrap 4 Example
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootstrap4_onclick.html" title="Bootstrap 4 Example Using HTML onclick attribute">
+                            Bootstrap 4 Example Using HTML onclick attribute
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootstrap5.html" title="Bootstrap 5 Example">
+                            Bootstrap 5 Example
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootstrap5_onclick.html" title="Bootstrap 5 Example Using HTML onclick attribute">
+                            Bootstrap 5 Example Using HTML onclick attribute
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <h2>Resources</h2>
+                <ul>
+                    <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/" target="_blank" title="Dialog (Modal) Pattern">
+                            Dialog (Modal) Pattern (www.w3.org)</a>
+                    </li>
+                    <li><a href="http://web-accessibility.carnegiemuseums.org/code/dialogs/" target="_blank" title="Modals (Dialog Windows)">
+                            Modals (Dialog Windows) (web-accessibility.carnegiemuseums.org)</a>
+                    </li>
+                    <li><a href="https://uxmovement.com/forms/best-practices-for-modal-windows/" target="_blank" title="Best Practices for Modal Windows">
+                            Best Practices for Modal Windows (uxmovement.com)</a>
+                    </li>
+                    <li><a href="https://accessibleweb.com/question-answer/where-should-keyboard-focus-go-in-modals/" target="_blank" title="Where should keyboard focus go in modals?">
+                            Where should keyboard focus go in modals? (accessibleweb.com)</a>
+                    </li>
+                    <li><a href="https://www.bennadel.com/blog/4097-restoring-activeelement-focus-after-a-user-interaction-in-javascript.htm" target="_blank" title="Restoring ActiveElement Focus After A User-Interaction In JavaScript">
+                            Restoring ActiveElement Focus After A User-Interaction In JavaScript (www.bennadel.com)</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="FormModalTitle" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="FormModalTitle">Add New Record</h4>
+                    <button type="button" class="btn close btn-modal--close" data-dismiss="modal" aria-label="Close open window" title="Close open window"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <details>
+                        <summary>Summary First</summary>
+
+                        <summary>Summary Second</summary>
+
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, cumque illum culpa, labore porro tempore numquam laboriosam quos omnis doloribus ipsam assumenda dolor veritatis non facilis, minima minus blanditiis voluptas!
+                        </p>
+                    </details>
+
+                    <form action="#" method="post" name="AddForm" role="form">
+                        <div class="form-group">
+                            <label class="col-form-label col-5" for="Name">Name</label>
+
+                            <div class="col">
+                                <input class="form-control input-md" data-val="true" data-val-required="The Name field is required." id="Name" name="Name" type="text" value="" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label col-5" for="Description">Description</label>
+
+                            <div class="col">
+                                <textarea class="form-control" cols="25" id="Description" name="Description" rows="3" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col">
+                                <input type="submit" value="Add" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger button--cancel" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+    <script src="./assets/js/app.js"></script>
+
+    <!-- modal-focus-trap JS file -->
+    <script src="./assets/js/modal-focus-trap.js"></script>
+
+    <script>
+
+        let isTrapEnabled = true;
+
+        $(function () {
+            // This needs to invoked before a Modal is created and opened.
+            // This creates an addEventListener for all elements that can trigger Modal.
+            // The addEventListener assists with returning focus back to the element triggering Modal.
+
+            ModalFocusTrap.GetTriggerTargets('button.modal--trigger'); // -- Using CSS Selector
+            //ModalFocusTrap.GetTriggerTargets(document.querySelectorAll('button.modal--trigger')); // -- Using DOM Selector
+            //ModalFocusTrap.GetTriggerTargets(Array.from(document.querySelectorAll('button.modal--trigger'))); // -- Using DOM Selector
+            //ModalFocusTrap.GetTriggerTargets($('button.modal--trigger')); // -- Using jQuery CSS Selector
+
+            $('.link--add').on('click', function () {
+                CreateModal();
+            });
+
+            function CreateModal() {
+                $('.modal').modal({
+                    backdrop: 'static',
+                    keyboard: true,
+                    focus: true
+                },
+                    'show',).on('shown.bs.modal', function (event) {
+                        if (!isTrapEnabled) {
+                            return;
+                        }
+
+                        // This is invoked when a Modal opens to handle trapping focus within the opened Modal.
+                        ModalFocusTrap.ActivateTrap(event.target);
+
+                        // ModalFocusTrap.ActivateTrap(this); // -- Using reference to calling function
+                        // ModalFocusTrap.ActivateTrap(event.target); // -- Using DOM Event Target
+                        // ModalFocusTrap.ActivateTrap('.modal'); // -- Using CSS Selector
+                        //ModalFocusTrap.ActivateTrap(document.querySelector('.modal')); // -- Using DOM Selector
+                        //ModalFocusTrap.ActivateTrap($('.modal')); // -- Using jQuery CSS Selector
+
+                    }).on('hidden.bs.modal', function () {
+                        // This is invoked when Modal closes returning focus back to element triggering Modal.
+                        ModalFocusTrap.Deactivate();
+                    });
+            }
+        });
+    </script>
+</body>
+
+</html>

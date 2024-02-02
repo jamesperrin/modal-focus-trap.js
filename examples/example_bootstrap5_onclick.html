@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bootstrap 5 Example | Modal Focus Trap</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <style>
+        /*-----------------------------------------------------------
+        JS required label validaiton styling
+        See: app.js AppServices.handleRequiredFormLabels()
+        Overriding reboot.scs
+        -----------------------------------------------------------*/
+        abbr[title="required"] {
+            margin-left: 5px;
+            font-size: 1.25em;
+            color: red;
+            text-decoration: none;
+            cursor: unset;
+            border-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <h1>Modal Focus Trap - Bootstrap 5 Example</h1>
+                <p style="font-size: 1.5rem;">Using HTML onclick attribute.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col mt-4">
+                <button type="button" id="add-1" title="Add 1" class="btn btn-primary link--add" onclick="ModalFocusTrap.ActivateOnClick('#staticBackdrop', this, 'show')">
+                    Add 1
+                </button>
+                <button type="button" id="add-2" title="Add 2" class="btn btn-primary link--add" onclick="ModalFocusTrap.ActivateOnClick('.modal', this, 'show')">
+                    Add 2
+                </button>
+                <button type="button" id="add-3" title="Add 3" class="btn btn-primary link--add" onclick="window.ModalFocusTrap.ActivateOnClick('#staticBackdrop', this)">
+                    Add 3
+                </button>
+                <button type="button" id="add-4" title="Add 4" class="btn btn-primary link--add" onclick="window.ModalFocusTrap.ActivateOnClick('.modal', this)">
+                    Add 4
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <h2>Examples</h2>
+                <ul>
+                    <li>
+                        <a href="./index.html" title="Bootstrap 4 Example">
+                            Bootstrap 4 Example
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootstrap4_onclick.html" title="Bootstrap 4 Example Using HTML onclick attribute">
+                            Bootstrap 4 Example Using HTML onclick attribute
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootstrap5.html" title="Bootstrap 5 Example">
+                            Bootstrap 5 Example
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootstrap5_onclick.html" title="Bootstrap 5 Example Using HTML onclick attribute">
+                            Bootstrap 5 Example Using HTML onclick attribute
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <h2>Resources</h2>
+                <ul>
+                    <li>
+                        <a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/" target="_blank" title="Dialog (Modal) Pattern">
+                            Dialog (Modal) Pattern (www.w3.org)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://web-accessibility.carnegiemuseums.org/code/dialogs/" target="_blank" title="Modals (Dialog Windows)">
+                            Modals (Dialog Windows) (web-accessibility.carnegiemuseums.org)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://uxmovement.com/forms/best-practices-for-modal-windows/" target="_blank" title="Best Practices for Modal Windows">
+                            Best Practices for Modal Windows (uxmovement.com)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://accessibleweb.com/question-answer/where-should-keyboard-focus-go-in-modals/" target="_blank" title="Where should keyboard focus go in modals?">
+                            Where should keyboard focus go in modals? (accessibleweb.com)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.bennadel.com/blog/4097-restoring-activeelement-focus-after-a-user-interaction-in-javascript.htm" target="_blank" title="Restoring ActiveElement Focus After A User-Interaction In JavaScript">
+                            Restoring ActiveElement Focus After A User-Interaction In JavaScript (www.bennadel.com)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                    <button type="button" class="btn-close btn btn-lg" data-bs-dismiss="modal" aria-label="Close" title="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <details>
+                        <summary>Summary First</summary>
+
+                        <summary>Summary Second</summary>
+
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, cumque illum culpa, labore porro tempore numquam laboriosam quos omnis doloribus ipsam assumenda dolor veritatis non facilis, minima minus blanditiis voluptas!
+                        </p>
+                    </details>
+
+                    <form action="#">
+                        <div class="form-group mb-2">
+                            <label for="name" class="form-label">Name</label>
+                            <div class="col">
+                                <input type="text" name="name" id="name" required class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="Description">Description</label>
+
+                            <div class="col">
+                                <textarea class="form-control" cols="25" id="Description" name="Description" rows="3" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col mt-3">
+                                <input type="submit" value="Submit" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <script src="./assets/js/app.js"></script>
+
+
+    <!-- modal-focus-trap JS file -->
+    <script src="./assets/js/modal-focus-trap.js"></script>
+
+    <script>
+
+        const modalOptions = {
+            backdrop: 'static',
+            keyboard: true,
+            focus: true
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const targetModal = new bootstrap.Modal(document.querySelector('.modal'), modalOptions);
+
+            document.querySelectorAll('button.link--add').forEach((el) => {
+                el.addEventListener('click', function () {
+                    targetModal.show();
+                });
+            });
+
+            document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+                // This is invoked when Modal closes to handle returning focus back to element triggering Modal.
+                window.ModalFocusTrap.Deactivate();
+            });
+        });
+    </script>
+</body>
+
+</html>

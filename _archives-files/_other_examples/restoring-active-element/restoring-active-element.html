@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        Restoring ActiveElement Focus After A User-Interaction In JavaScript
+    </title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 18px;
+        }
+
+        button {
+            font-size: 100%;
+        }
+
+        button:focus {
+            outline: 3px solid #ff3366;
+        }
+
+        .modal {
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            bottom: 0px;
+            display: none;
+            justify-content: center;
+            left: 0px;
+            overscroll-behavior: contain;
+            position: fixed;
+            right: 0px;
+            top: 0px;
+        }
+
+        .modal--open {
+            display: flex;
+        }
+
+        .modal__panel {
+            background-color: #ffffff;
+            border-radius: 5px 5px 5px 5px;
+            padding: 30px 30px 30px 30px;
+        }
+
+        .modal__panel:focus,
+        .modal__panel:focus-within {
+            outline: 4px dotted #ffffff;
+        }
+
+        .modal__panel>*:first-child {
+            margin-top: 0px;
+        }
+
+        .modal__panel>*:last-child {
+            margin-bottom: 0px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>
+        Restoring ActiveElement Focus After A User-Interaction In JavaScript
+    </h1>
+
+    <p class="trigger">
+        <button>Open modal (1)</button> , <button>Open modal (2)</button> ,
+        <button>Open modal (3)</button> , <button>Open modal (4)</button>
+    </p>
+    <p class="trigger">
+        <button>Open modal (5)</button> , <button>Open modal (6)</button> ,
+        <button>Open modal (7)</button> , <button>Open modal (8)</button>
+    </p>
+
+    <!--
+		Our modal window is going to be hidden by default. When triggered, it will take
+		over the focus; and, when closed, focus will be returned to the element that
+		originally triggered it.
+	-->
+    <div class="modal">
+        <div role="dialog" aria-labelledby="modal-title" class="modal__panel">
+            <h2 id="modal-title">
+                Hello, Modal
+            </h2>
+            <p>
+                <button>Close</button>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+        // var trigger = $(".trigger").on("click", "button", openModal);
+
+        document.querySelectorAll('.trigger button').forEach((el) => {
+            el.addEventListener('click', openModal);
+        });
+
+        var modal = $(".modal").on("click", handleModalClick);
+
+        // We're applying tabindex to the modal panel so that we can programmatically
+        // focus the panel after we open the modal window.
+        var panel = modal
+            .find(".modal__panel").attr("tabindex", "-1")
+            .on("click", "button", closeModal);
+
+        // I keep track of element that triggered the modal window.
+        var previousElement = null;
+
+        // --------------------------------------------------------------------------- //
+        // --------------------------------------------------------------------------- //
+
+        // I open the modal window and draw focus into the modal container.
+        function openModal() {
+            console.log('openModal()');
+
+            // We're about to open the modal window and draw focus into the modal panel.
+            // But, before we do that, we want to track which element triggered the modal
+            // so that we can restore focus to that element when the modal is closed.
+            previousElement = (document.activeElement || document.body);
+
+
+            modal.addClass("modal--open");
+            panel.focus();
+
+            console.group("Taking focus away from trigger");
+            console.log(previousElement);
+            console.groupEnd();
+
+        }
+
+
+        // I close the modal window and return focus to the previous element.
+        function closeModal() {
+
+            modal.removeClass("modal--open");
+
+            // If we have a reference to the original trigger, let's restore focus to
+            // that the trigger so the user can pick-up where they left off.
+            if (previousElement) {
+
+                console.group("Restoring focus to previously-active element");
+                console.log(previousElement);
+                console.groupEnd();
+
+                previousElement.focus();
+                previousElement = null;
+
+            }
+
+        }
+
+
+        // I handle top-level clicks on the modal.
+        function handleModalClick(event) {
+
+            // If the user is clicking directly on the backdrop of the modal, let's
+            // consider this a request to close the modal (a common interaction model).
+            if (modal.is(event.target)) {
+
+                closeModal();
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

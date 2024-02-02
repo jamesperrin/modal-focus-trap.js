@@ -1,0 +1,38 @@
+{
+    "printWidth": 120,
+    "tabWidth": 2,
+    "endOfLine": "crlf",
+    "useTabs": false,
+    "trailingComma": "all",
+	"semi": true,
+    "singleQuote": true,
+    "jsxSingleQuote": false,
+	"quoteProps": "preserve",
+    "proseWrap": "preserve",
+    "bracketSpacing": true,
+    "bracketSameLine": true,
+	"jsxBracketSameLine": true,
+    "htmlWhitespaceSensitivity": "css",
+    "singleAttributePerLine": false,
+    "arrowParens": "always",
+    "overrides": [
+        {
+            "files": ["*.prettierrc", "*.prettierrc.json"],
+            "options": {
+                "parser": "json"
+            }
+        },
+        {
+            "files": ["*.css", "*.scss"],
+            "options": {
+                "singleQuote": false
+            }
+        },
+        {
+            "files": ["*.html", "*.htm"],
+            "options": {
+                "tabWidth": 4
+            }
+        }
+    ]
+}
