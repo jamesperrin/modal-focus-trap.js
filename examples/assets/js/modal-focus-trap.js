@@ -279,26 +279,26 @@ const ModalFocusTrap = new (function () {
       return;
     }
 
-    const isModal = SelectorEngine.queryElement(targetModal);
-
-    if (!isModal) {
-      alert(
-        'ERROR: ModalFocusTrap ActiveOnClick\n\nParameter targetModal needs to be a CSS selector String, or DOM reference to Modal element.',
-      );
-
-      console.error('Parameter targetModal needs to be a CSS selector String, or DOM reference to Modal element.');
-
-      return;
-    }
-
     triggerTarget = triggerElement;
 
     const checkInterval = setInterval(function () {
-      const hasModal = !className
-        ? document.querySelector(`${targetModal}`)
-        : document.querySelector(`${targetModal}`).classList.contains(`${className}`);
+      targetModal = SelectorEngine.queryElement(targetModal);
 
-      const timeout = !className ? 375 : 275;
+      if (!targetModal) {
+        clearInterval(checkInterval);
+
+        alert(
+          'ERROR: ModalFocusTrap ActiveOnClick\n\nParameter targetModal needs to be a CSS selector String, or DOM reference to Modal element.',
+        );
+
+        console.error('Parameter targetModal needs to be a CSS selector String, or DOM reference to Modal element.');
+
+        return;
+      }
+
+      const hasModal = !className ? targetModal : targetModal.classList.contains(`${className}`);
+
+      const timeout = !className ? 500 : 400;
 
       if (hasModal) {
         clearInterval(checkInterval);
