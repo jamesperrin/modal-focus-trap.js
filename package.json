@@ -1,0 +1,32 @@
+{
+  "name": "modal-focus-trap",
+  "version": "1.1.0.0",
+  "description": "VanillaJS library for trapping focus within an opened Modal, and returning focus back to the element triggering Modal.",
+  "main": "src/modal-focus-trap/modal-focus-trap.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "dev:minJS": "minify ./src/modal-focus-trap/modal-focus-trap.js > ./src/modal-focus-trap/modal-focus-trap.min.js",
+    "build": "rimraf ./build/modal-focus-trap && copyFiles -f ./src/modal-focus-trap/* ./build/modal-focus-trap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesperrin/modal-focus-trap.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jamesperrin/modal-focus-trap.js/issues"
+  },
+  "homepage": "https://github.com/jamesperrin/modal-focus-trap.js#readme",
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "minify": "^13.0.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "usemin-cli": "^0.6.0"
+  }
+}
