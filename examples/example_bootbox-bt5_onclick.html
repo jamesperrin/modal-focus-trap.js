@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bootstrap 4 Example - OnClick | Modal Focus Trap</title>
+    <title>Bootbox Example - OnClick | Modal Focus Trap</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
-    <link rel="stylesheet" href="./assets/vendor/bootstrap-4.6.2-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="./assets/vendor/bootstrap-5.3.2-dist/css/bootstrap.css" />
 
     <style>
         /*-----------------------------------------------------------
@@ -24,18 +24,20 @@
             border-bottom: 0;
         }
 
-        .modal-header .close {
-            background: #6c757d;
-            color: white;
-            font-size: 2rem;
-            padding: 0.10rem 0.5rem 0.5rem;
-            margin: -0.5rem -0.5rem -0.5rem auto;
-            border-radius: 0.25rem;
+        input:not([disabled]):focus,
+        select:not([disabled]):focus,
+        textarea:not([disabled]):focus,
+        button:not([disabled]):focus {
+            outline: 0.25rem solid #2491ff;
+            outline-offset: 0;
         }
 
-        .modal-header .close:hover,
-        .modal-header .close:focus {
-            font-size: 2.15rem;
+        [contentEditable="true"]:focus,
+        [href]:focus,
+        [tabindex]:focus,
+        iframe:focus {
+            outline: 0.25rem solid #2491ff;
+            outline-offset: 0;
         }
     </style>
 </head>
@@ -44,7 +46,7 @@
     <div class="container">
         <div class="row">
             <div class="col mt-5">
-                <h1>Modal Focus Trap - Bootstrap 4 Example</h1>
+                <h1>Modal Focus Trap - Bootbox Bootstrap 5 Example</h1>
                 <p style="font-size: 1.5rem;">Using HTML onclick attribute.</p>
             </div>
         </div>
@@ -53,18 +55,22 @@
     <div class="container">
         <div class="row">
             <div class="col mt-4">
-                <button type="button" id="add-1" title="Add 1" class="btn btn-primary link--add" onclick="ModalFocusTrap.ActivateOnClick('#FormModal', this, JSON.parse('{&quot;className&quot;: &quot;show&quot;}'))">
+                <button type="button" id="add-1" title="Add 1" class="btn btn-primary link--add modal__trigger">
                     Add 1
                 </button>
-                <button type="button" id="add-2" title="Add 2" class="btn btn-primary link--add" onclick="ModalFocusTrap.ActivateOnClick('.modal', this, JSON.parse('{&quot;className&quot;: &quot;show&quot;}'))">
+                <button type="button" id="add-2" title="Add 2" class="btn btn-primary link--add modal__trigger">
                     Add 2
                 </button>
-                <button type="button" id="add-3" title="Add 3" class="btn btn-primary link--add" onclick="window.ModalFocusTrap.ActivateOnClick('#FormModal', this)">
+
+                <button type="button" id="add-3" title="Add 3" class="btn btn-primary link--add modal__trigger" onclick="window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', this, JSON.parse('{&quot;className&quot;: &quot;show&quot;}'))">
                     Add 3
                 </button>
-                <button type="button" id="add-4" title="Add 4" class="btn btn-primary link--add" onclick="window.ModalFocusTrap.ActivateOnClick('.modal', this)">
-                    Add 4
-                </button>
+
+                <button type="button" id="add-3b" title="Add 3b" class="btn btn-primary link--add modal__trigger" onclick="window.ModalFocusTrap.ActivateOnClick('div.bootbox.modal', this)">Add 3b</button>
+
+                <button type="button" id="add-3c" title="Add 3c" class="btn btn-primary link--add modal__trigger">Add 3-C</button>
+
+                <button type="button" id="add-4" title="Add 4" class="btn btn-primary link--add modal__trigger--add">Add 4</button>
             </div>
         </div>
     </div>
@@ -184,8 +190,8 @@
     </div>
 
     <script src="./assets/vendor/jquery/jquery-3.7.1.js"></script>
-    <script src="./assets/vendor/bootstrap-4.6.2-dist/js/bootstrap.bundle.js"></script>
-    <script src="./assets/vendor/bootbox/bootbox.all.js"></script>
+    <script src="./assets/vendor/bootstrap-5.3.2-dist/js/bootstrap.bundle.js"></script>
+    <script src="./assets/vendor/bootbox/bootbox.js"></script>
 
     <!-- modal-focus-trap JS file -->
     <script src="./assets/js/modal-focus-trap.js"></script>
@@ -194,21 +200,125 @@
 
     <script>
         $(function () {
-            $('.link--add').on('click', function () {
-                CreateModal();
+
+            // $('.modal__trigger').on('click', function () {
+            //     CreateModalOnClick();
+            // });
+
+            document.querySelectorAll('.modal__trigger').forEach((el) => {
+                let options = null;
+                options = { "className": "show", "initialFocusNode": "button.btn.btn-danger.bootbox-accept" };
+                // options = { "className": "show", timeout: 400 };
+
+                el.onclick = function (event) {
+                    window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', this, options);
+                };
             });
 
+            document.querySelectorAll('.modal__trigger').forEach(function (el) {
+                el.addEventListener('click', function () {
+                    CreateModalOnClick();
+                });
+            });
+
+            document.querySelector('#add-3c').onclick = function () {
+                let options = '';
+                options = { "className": "show", "initialFocusNode": "button.btn.btn-danger.bootbox-accept", timeout: 500 };
+                // options = { "className": "show", "initialFocusNode": "button.btn.btn-danger.bootbox-accept" };
+                // options = { "className": "show", timeout: 400 };
+                // options = JSON.parse('{ "className": "show", "initialFocusNode": "button.btn.btn-danger.bootbox-accept" }');
+                // options = JSON.stringify(options);
+
+                // window.ModalFocusTrap.ActivateOnClick('.bootbox.modal');
+                window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', this, options);
+                // window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', document.activeElement);
+
+                // CreateModalOnClick();
+            };
+
+            document.querySelector('#add-4').onclick = function () {
+                let options = '';
+                // options = { "className": "show", timeout: 300 };
+                // options = { "className": "show", "initialFocusNode": "button.btn.btn-danger.bootbox-accept", timeout: 400 };
+                options = JSON.parse('{ "className": "show", "initialFocusNode": "button.btn.btn-danger.bootbox-accept" }');
+                // options = JSON.stringify(options);
+
+                window.ModalFocusTrap.ActivateOnClick('.bootbox.modal');
+                // window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', this);
+                // window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', this, options);
+                // window.ModalFocusTrap.ActivateOnClick('.bootbox.modal', document.activeElement);
+                CreateModalOnClick();
+            };
+
             function CreateModal() {
-                $('.modal').modal({
-                    backdrop: 'static',
-                    keyboard: true,
-                    focus: true
-                }, 'show').on('hidden.bs.modal', function () {
-                    // This is invoked when Modal closes to handle returning focus back to element triggering Modal.
-                    window.ModalFocusTrap.Deactivate();
+                const recordName = 'My Record';
+
+                bootbox.confirm({
+                    message:
+                        '<h3>Warning:</h3><p>This will remove the selected Record (<strong>' +
+                        recordName +
+                        '</strong>) from objectSettings.</p><p>Removing this Record may prevent users from accessing areas in the application.</p><p>Only remove this Record if you intend to update the AppSettings.</p><p><strong>Do you wish to continue?</strong></p>',
+                    swapButtonOrder: true,
+                    buttons: {
+                        confirm: {
+                            label: 'Confirm Delete',
+                            className: 'btn-danger',
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            className: 'btn-primary',
+                        },
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            // Do something
+                        }
+                    },
+                    onShown: function () {
+                        window.ModalFocusTrap.Activate('.bootbox.modal');
+                    },
+                    onHidden: function () {
+                        ModalFocusTrap.Deactivate();
+                    },
+                });
+            }
+
+            function CreateModalOnClick() {
+                const recordName = 'My Record';
+
+                bootbox.confirm({
+                    message:
+                        '<h3>Warning:</h3><p>This will remove the selected Record (<strong>' +
+                        recordName +
+                        '</strong>) from objectSettings.</p><p>Removing this Record may prevent users from accessing areas in the application.</p><p>Only remove this Record if you intend to update the AppSettings.</p><p><strong>Do you wish to continue?</strong></p>',
+                    swapButtonOrder: true,
+                    buttons: {
+                        confirm: {
+                            label: 'Confirm Delete',
+                            className: 'btn-danger',
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            className: 'btn-primary',
+                        },
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            // Do something
+                        }
+                    },
+                    onShown: function () {
+                    },
+                    onHidden: function () {
+                        ModalFocusTrap.Deactivate();
+                    },
                 });
             }
         });
+
+
+
+
     </script>
 </body>
 

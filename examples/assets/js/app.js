@@ -1,9 +1,9 @@
 const AppCommon = {};
 
-  /**
-   * @description Handles creating required abbr element.
-   * @param {HTMLLabelElement} HTML label element
-   */
+/**
+ * @description Handles creating required abbr element.
+ * @param {HTMLLabelElement} HTML label element
+ */
 
 AppCommon.HandleRequiredFormLabels = function (label) {
   if (label && !!label.innerText) {
@@ -21,36 +21,21 @@ AppCommon.HandleRequiredFormLabels = function (label) {
  * @description Displays a red asterisk near label for required form fields.
  */
 AppCommon.HandleRequiredFormFields = function () {
-  if (document.querySelector('form')) {
-    document.querySelectorAll('input,select,textarea').forEach(function (el) {
-      if (el.hasAttribute('data-val-required') || el.hasAttribute('required')) {
-        const label = document.querySelector(
-          `label:not(.custom-control-label)[for="${el.id}"],label:not(.usa-checkbox__label)[for="${el.id}"]`,
-        );
-        AppCommon.HandleRequiredFormLabels(label);
-      }
-    });
+  const form = document.querySelector('form');
+
+  if (!form) {
+    return;
   }
-};
 
-function handleDisablingFocusTrap() {
-  const button = document.querySelector('#DisableBtn');
-  button.addEventListener('click', function () {
-      isTrapEnabled = !isTrapEnabled;
-
-      if (isTrapEnabled) {
-          button.classList.remove('btn-success');
-          button.classList.add('btn-danger');
-          button.textContent = 'Disable focus trap';
-          button.title = 'Disable focus trap';
-      } else {
-          button.classList.remove('btn-danger');
-          button.classList.add('btn-success');
-          button.textContent = 'Enable focus trap';
-          button.title = 'Enable focus trap';
-      }
+  document.querySelectorAll('input,select,textarea').forEach(function (el) {
+    if (el.hasAttribute('data-val-required') || el.hasAttribute('required')) {
+      const label = document.querySelector(
+        `label:not(.custom-control-label)[for="${el.id}"],label:not(.usa-checkbox__label)[for="${el.id}"]`,
+      );
+      AppCommon.HandleRequiredFormLabels(label);
+    }
   });
-}
+};
 
 /**
  * @description Calls AppCommonJsHandler IIFE
@@ -58,6 +43,5 @@ function handleDisablingFocusTrap() {
 (function AppCommonJsHandler() {
   document.addEventListener('DOMContentLoaded', function () {
     AppCommon.HandleRequiredFormFields();
-    handleDisablingFocusTrap();
   });
 })();

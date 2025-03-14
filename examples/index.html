@@ -97,6 +97,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="./example_bootbox-bt4_onclick.html" title="Bootbox Bootstrap 4 Example Using HTML onclick attribute">
+                            Bootbox Bootstrap 4 Example Using HTML onclick attribute
+                        </a>
+                    </li>
+                    <li>
                         <a href="./example_bootstrap5.html" title="Bootstrap 5 Example">
                             Bootstrap 5 Example
                         </a>
@@ -104,6 +109,11 @@
                     <li>
                         <a href="./example_bootstrap5_onclick.html" title="Bootstrap 5 Example Using HTML onclick attribute">
                             Bootstrap 5 Example Using HTML onclick attribute
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./example_bootbox-bt5_onclick.html" title="Bootbox Bootstrap 5 Example Using HTML onclick attribute">
+                            Bootbox Bootstrap 5 Example Using HTML onclick attribute
                         </a>
                     </li>
                 </ul>
@@ -195,18 +205,41 @@
     <script src="./assets/js/modal-focus-trap.js"></script>
 
     <script>
+        let isTrapEnabled = false;
 
-        let isTrapEnabled = true;
+        function handleIsTrapEnabled(disableBtn) {
+            if (isTrapEnabled) {
+                disableBtn.classList.remove('btn-success');
+                disableBtn.classList.add('btn-danger');
+                disableBtn.textContent = 'Disable focus trap';
+                disableBtn.title = 'Disable focus trap';
+            }
+            else{
+                disableBtn.classList.remove('btn-danger');
+                disableBtn.classList.add('btn-success');
+                disableBtn.textContent = 'Enable focus trap';
+                disableBtn.title = 'Enable focus trap';
+            }
+        }
 
         $(function () {
+            const disableBtn = document.querySelector('#DisableBtn');
+
+            handleIsTrapEnabled(disableBtn);
+
+            disableBtn.addEventListener('click', function () {
+                isTrapEnabled = !isTrapEnabled;
+                handleIsTrapEnabled(this);
+            });
+
             // This needs to invoked before a Modal is created and opened.
             // This creates an addEventListener for all elements that can trigger Modal.
             // The addEventListener assists with returning focus back to the element triggering Modal.
 
-            ModalFocusTrap.GetTriggerTargets('button.modal--trigger'); // -- Using CSS Selector
-            //ModalFocusTrap.GetTriggerTargets(document.querySelectorAll('button.modal--trigger')); // -- Using DOM Selector
-            //ModalFocusTrap.GetTriggerTargets(Array.from(document.querySelectorAll('button.modal--trigger'))); // -- Using DOM Selector
-            //ModalFocusTrap.GetTriggerTargets($('button.modal--trigger')); // -- Using jQuery CSS Selector
+            ModalFocusTrap.GetTriggerTargets('.modal--trigger'); // -- Using CSS Selector
+            // ModalFocusTrap.GetTriggerTargets(document.querySelectorAll('button.modal--trigger')); // -- Using DOM Selector
+            // ModalFocusTrap.GetTriggerTargets(Array.from(document.querySelectorAll('button.modal--trigger'))); // -- Using DOM Selector
+            // ModalFocusTrap.GetTriggerTargets($('button.modal--trigger')); // -- Using jQuery CSS Selector
 
             $('.link--add').on('click', function () {
                 CreateModal();
@@ -224,13 +257,13 @@
                         }
 
                         // This is invoked when a Modal opens to handle trapping focus within the opened Modal.
-                        ModalFocusTrap.ActivateTrap(event.target);
+                        ModalFocusTrap.Activate(event.target);
 
-                        // ModalFocusTrap.ActivateTrap(this); // -- Using reference to calling function
-                        // ModalFocusTrap.ActivateTrap(event.target); // -- Using DOM Event Target
-                        // ModalFocusTrap.ActivateTrap('.modal'); // -- Using CSS Selector
-                        //ModalFocusTrap.ActivateTrap(document.querySelector('.modal')); // -- Using DOM Selector
-                        //ModalFocusTrap.ActivateTrap($('.modal')); // -- Using jQuery CSS Selector
+                        // ModalFocusTrap.Activate(this); // -- Using reference to calling function
+                        // ModalFocusTrap.Activate(event.target); // -- Using DOM Event Target
+                        // ModalFocusTrap.Activate('.modal'); // -- Using CSS Selector
+                        // ModalFocusTrap.Activate(document.querySelector('.modal')); // -- Using DOM Selector
+                        // ModalFocusTrap.Activate($('.modal')); // -- Using jQuery CSS Selector
 
                     }).on('hidden.bs.modal', function () {
                         // This is invoked when Modal closes returning focus back to element triggering Modal.
