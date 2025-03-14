@@ -1,6 +1,6 @@
 /**
  * @name modal-focus-trap.js
- * @version 1.0.0.0
+ * @version 1.1.0.0
  * @description VanillaJS library for trapping focus within an opened Modal, and returning focus back to the element triggering Modal.
  * @author James Perrin, @jamesperrin | https://github.com/jamesperrin
  * @license Licensed under CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
@@ -121,6 +121,17 @@ const SelectorEngine = {
     }
     return null;
   },
+  getObject(options) {
+    if (options && typeof options === 'object') {
+      return options;
+    }
+
+    if (options && typeof options === 'string') {
+      return JSON.parse(options);
+    }
+
+    return null;
+  },
 };
 
 /**
@@ -128,7 +139,26 @@ const SelectorEngine = {
  *
  */
 const ModalFocusTrap = new (function () {
-  let triggerTarget = null;
+  // ===========================
+  // PRIVATE DECLARATIONS
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  let _triggerTarget = null;
+
+  const _settingNames = {
+    className: 'className',
+    initialFocusNode: 'initialFocusNode',
+    timeout: 'timeout',
+  };
+
+  const _settings = {
+    className: null,
+    initialFocusNode: null,
+    timeout: 500,
+  };
+
+  function _getActualTargetTrigger(targetTrigger) {
+    return targetTrigger || document.activeElement || document.body;
+  }
 
   /**
    * @description Method invoked to retrieve reference to the element triggering Modal.
@@ -136,7 +166,7 @@ const ModalFocusTrap = new (function () {
    *
    * @returns {HTMLElement}
    */
-  function GetTriggerTarget(event) {
+  function _getTriggerTarget(event) {
     /*
       NOTE: If the trap is _inside_ a shadow DOM, event.target will always be the
         shadow host. However, event.target.composedPath() will be an array of
@@ -148,8 +178,16 @@ const ModalFocusTrap = new (function () {
 
         See: https://github.com/focus-trap/focus-trap/blob/master/index.js#L98
       */
-    return event.target.shadowRoot && typeof event.composedPath === 'function' ? event.composedPath()[0] : event.target;
+    if (event.target.shadowRoot && typeof event.composedPath === 'function') {
+      return event.composedPath()[0];
+    } else {
+      return _getActualTargetTrigger(event.target);
+    }
   }
+
+  // ===========================
+  // PUBLIC DECLARATIONS
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /**
    * @description Method invoked before a Modal is created and opened.
@@ -162,6 +200,7 @@ const ModalFocusTrap = new (function () {
    *
    *     ModalFocusTrap.GetTriggerTargets('.modal--trigger button'); -- Using CSS Selector
    *     ModalFocusTrap.GetTriggerTargets('button.modal--trigger'); -- Using CSS Selector
+   *     ModalFocusTrap.GetTriggerTargets(document.querySelector('button.modal--trigger')); -- Using DOM Selector
    *     ModalFocusTrap.GetTriggerTargets(document.querySelectorAll('button.modal--trigger')); -- Using DOM Selector
    *     ModalFocusTrap.GetTriggerTargets($('button.modal--trigger')); -- Using jQuery CSS Selector
    *
@@ -170,71 +209,88 @@ const ModalFocusTrap = new (function () {
   this.GetTriggerTargets = function (triggerTargets) {
     triggerTargets = SelectorEngine.queryElementAll(triggerTargets);
 
-    if (!triggerTargets) {
+    if (!triggerTargets || triggerTargets.length === 0) {
       alert(
-        'ERROR: ModalFocusTrap GetTriggerTargets  \n\nFunction parameter needs to be a String or DOM reference to element trigging Modal.',
+        'ERROR: ModalFocusTrap GetTriggerTargets  \n\nFunction parameter needs to be a String or DOM reference to elements trigging a Modal.',
       );
-
-      console.error('Parameter needs to be a String or DOM reference to element trigging Modal.');
-
+      console.error('Parameter needs to be a String or DOM reference to element trigging a Modal.');
       return;
     }
 
-    triggerTargets.forEach(function (el) {
-      el.addEventListener('click', function (event) {
-        // Handles setting the variable for the element triggering a Modal.
-        triggerTarget = GetTriggerTarget(event);
+    // Handles setting the variable for the element triggering a Modal.
+    if (SelectorEngine.isNodeList(triggerTargets) && triggerTargets.length) {
+      triggerTargets.forEach(function (el) {
+        el.addEventListener('click', function (event) {
+          _triggerTarget = _getTriggerTarget(event);
+        });
       });
-    });
+    }
   };
 
   /**
-   * @description Method invoked when a Modal opens to handle trapping focus within the opened Modal.
+   * @description Method invoked when a Modal opens to handle trapping focus within the opened Modal. The method ModalFocusTrap.GetTriggerTargets() must be invoked before invoking this method.
    * @param {(String|HTMLElement)} targetModal Must be a valid CSS selector String, or a DOM reference to Modal element.
+   * @param {(String|HTMLElement)} initialElementFocus (Optional) Must be a valid CSS selector String, or a DOM reference to initial focus element.
    *
    * @example
    *
-   *     ModalFocusTrap.ActivateTrap(event.target); // -- Using DOM Event Target
-   *     ModalFocusTrap.ActivateTrap('.modal'); -- Using CSS Selector
-   *     ModalFocusTrap.ActivateTrap(document.querySelector('.modal')); -- Using DOM Selector
-   *     ModalFocusTrap.ActivateTrap($('.modal')); -- Using jQuery CSS Selector
+   *     ModalFocusTrap.Activate(event.target); // -- Using DOM Event Target
+   *     ModalFocusTrap.Activate('.modal'); -- Using CSS Selector
+   *     ModalFocusTrap.Activate(document.querySelector('.modal')); -- Using DOM Selector
+   *     ModalFocusTrap.Activate($('.modal')); -- Using jQuery CSS Selector
    *
    *     Note: Bootstrap "shown.bs.modal" Event, "this" is a reference to Modal element
    *
    *     --- Bootstrap 4
    *     $('.modal').on('shown.bs.modal', function (event) {
-   *       ModalFocusTrap.ActivateTrap(event.target);  // -- Using DOM Event Target
+   *       ModalFocusTrap.Activate(event.target);  // -- Using DOM Event Target
    *     });
    *
    *     --- Bootstrap 5 and later
    *     document.querySelector('.modal').addEventListener('shown.bs.modal', function (event) {
-   *       ModalFocusTrap.ActivateTrap(event.target);  // -- Using DOM Event Target
+   *       ModalFocusTrap.Activate(event.target);  // -- Using DOM Event Target
    *     });
    *
    * @return {void}
    */
-  this.ActivateTrap = function (targetModal) {
-    targetModal = SelectorEngine.queryElement(targetModal);
+  this.Activate = function (targetModal, initialElementFocus) {
+    const trapModalTarget = SelectorEngine.queryElement(targetModal);
 
-    if (!targetModal) {
+    if (!trapModalTarget) {
       alert(
-        'ERROR: ModalFocusTrap ActivateTrap\n\nFunction parameter needs to be a CSS selector String, or DOM reference to Modal element.',
+        'ERROR: ModalFocusTrap Activate.\n\nFunction parameter needs to be a CSS selector String, or DOM reference to a Modal element.',
       );
 
-      console.error('Function parameter needs to be a CSS selector String, or DOM reference to Modal element.');
+      console.error('Function parameter needs to be a CSS selector String, or DOM reference to a Modal element.');
 
       return;
     }
 
     const TAB_KEY = 'Tab';
-    const elements = SelectorEngine.focusableChildren(targetModal);
+    const elements = SelectorEngine.focusableChildren(trapModalTarget);
+
+    if (elements.length === 0) {
+      trapModalTarget.focus();
+      return;
+    }
+
     const firstElement = elements[0];
     const lastElement = elements[elements.length - 1];
+    initialElementFocus = SelectorEngine.queryElement(initialElementFocus);
 
-    firstElement.focus();
+    if (initialElementFocus) {
+      const idx = elements.indexOf(initialElementFocus);
+
+      if (idx !== -1) {
+        elements[idx].focus();
+      }
+    } else {
+      firstElement.focus();
+    }
 
     firstElement.addEventListener('keydown', function (event) {
       if (event.key == TAB_KEY && event.shiftKey) {
+        event.stopPropagation();
         event.preventDefault();
         lastElement.focus();
       }
@@ -242,6 +298,7 @@ const ModalFocusTrap = new (function () {
 
     lastElement.addEventListener('keydown', function (event) {
       if (event.key == TAB_KEY && !event.shiftKey) {
+        event.stopPropagation();
         event.preventDefault();
         firstElement.focus();
       }
@@ -256,54 +313,67 @@ const ModalFocusTrap = new (function () {
    *
    * @example
    *
-   *    <button type="button" title="Add" onclick="ModalFocusTrap.ActivateOnClick('#modal-id', this)">
-   *      Add
+   *    HTML
+   *    <button type="button" title="Add 1" class="modal__trigger" onclick="ModalFocusTrap.ActivateOnClick('#modal-id', this)">
+   *      Add 1
    *    </button>
    *
-   *    <button type="button" title="Add" onclick="ModalFocusTrap.ActivateOnClick('.modal', this, 'show')">
-   *      Add
+   *    <button type="button" title="Add 2" class="modal__trigger" onclick="ModalFocusTrap.ActivateOnClick('.modal', this, JSON.parse('{&quot;className&quot;: &quot;show&quot;}'))">
+   *      Add 2
    *    </button>
+   *
+   *    <script>
+   *      document.querySelectorAll('.modal__trigger).forEach(function (el) {
+   *        el.addEventListener('click', function () {
+   *          CreateModalOnClick();
+   *        });
+   *      });
+   *    </script>
    *
    * @return {void}
    */
-  this.ActivateOnClick = function (targetModal, triggerElement, className) {
-    triggerElement = SelectorEngine.queryElement(triggerElement);
+  this.ActivateOnClick = function (targetModal, triggerElement, options) {
+    let className = null;
+    let initialFocusNode = null;
+    let timeout = 400;
 
-    if (!triggerElement) {
-      alert(
-        'ERROR: ModalFocusTrap ActiveOnClick\n\nParameter triggerElement needs to be a DOM reference to element trigging Modal.',
-      );
-
-      console.error('Parameter triggerElement needs to be a DOM reference to element trigging Modal.');
-
-      return;
+    if (options) {
+      options = SelectorEngine.getObject(options);
+      className = Object.hasOwn(options, _settingNames.className)
+        ? options[_settingNames.className]
+        : _settings.className;
+      initialFocusNode = Object.hasOwn(options, _settingNames.initialFocusNode)
+        ? options[_settingNames.initialFocusNode]
+        : _settings.initialFocusNode;
+      timeout = Object.hasOwn(options, _settingNames.timeout) ? options[_settingNames.timeout] : _settings.timeout;
     }
 
-    triggerTarget = triggerElement;
+    // Handles setting the variable for the element triggering a Modal.
+    triggerElement = SelectorEngine.queryElement(triggerElement);
+    _triggerTarget = _getActualTargetTrigger(triggerElement);
 
     const checkInterval = setInterval(function () {
-      targetModal = SelectorEngine.queryElement(targetModal);
+      const trapModalTarget = SelectorEngine.queryElement(targetModal);
+      initialFocusNode = SelectorEngine.queryElement(initialFocusNode);
 
-      if (!targetModal) {
+      if (!trapModalTarget) {
         clearInterval(checkInterval);
 
         alert(
-          'ERROR: ModalFocusTrap ActiveOnClick\n\nParameter targetModal needs to be a CSS selector String, or DOM reference to Modal element.',
+          'ERROR: ModalFocusTrap ActiveOnClick\n\nParameter targetModal needs to be a CSS selector String, or DOM reference to a Modal element.',
         );
 
-        console.error('Parameter targetModal needs to be a CSS selector String, or DOM reference to Modal element.');
+        console.error('Parameter targetModal needs to be a CSS selector String, or DOM reference to a Modal element.');
 
         return;
       }
 
-      const hasModal = !className ? targetModal : targetModal.classList.contains(`${className}`);
-
-      const timeout = !className ? 500 : 400;
+      const hasModal = !className ? trapModalTarget : trapModalTarget.classList.contains(`${className}`);
 
       if (hasModal) {
         clearInterval(checkInterval);
         setTimeout(function () {
-          ModalFocusTrap.ActivateTrap(targetModal);
+          ModalFocusTrap.Activate(trapModalTarget, initialFocusNode);
         }, timeout);
       }
     }, 100);
@@ -319,10 +389,9 @@ const ModalFocusTrap = new (function () {
    * @return {void}
    */
   this.Deactivate = function () {
-    if (triggerTarget) {
-      triggerTarget.focus();
-      triggerTarget = null;
-    }
+    _triggerTarget = _getActualTargetTrigger(_triggerTarget);
+    _triggerTarget.focus();
+    _triggerTarget = null;
   };
 
   document.addEventListener('DOMContentLoaded', function () {
